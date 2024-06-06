@@ -1,0 +1,12 @@
+dash
+dash-core-components
+dash-html-components
+dash-renderer
+dash-bootstrap-components
+dash-tools
+gunicorn
+pandas
+plotly
+numpy
+wordcloud
+matplotlib

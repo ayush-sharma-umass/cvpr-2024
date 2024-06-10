@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 cfg = {
-    'page_title': "CVPR 2024",
+    'page_title': "CVPR 2024 DASHBOARD",
     'DATA_DIR': "../data",
     'DATA_CSV': "large-cvpr-24-with-openai-response-and-institutes.csv",
     'RELEVANT_TAGS': 'relevant_tags',
@@ -11,6 +11,8 @@ cfg = {
     'BARPLOT_HT': 1000,
     'theme' :'seaborn',
     'MAX_WORDCLOUD_WORDS': 120,
+    'TAGS_EXPLANATION': 'tags_explanation',
+    'ORGS_EXPLANATION': 'orgs_explanation',
 }
 
 
@@ -26,6 +28,8 @@ class Config:
     BARPLOT_HT: int
     theme: str
     MAX_WORDCLOUD_WORDS: int = field(default=120)
+    TAGS_EXPLANATION: str = 'tags_explanation'
+    ORGS_EXPLANATION: str = 'orgs_explanation'
 
 
 def create_config() -> Config:

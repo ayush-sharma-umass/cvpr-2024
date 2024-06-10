@@ -121,7 +121,7 @@ def wordcloud_to_plotly(word_data):
         yaxis=dict(showgrid=False, zeroline=False),
         xaxis_title="",
         yaxis_title="",
-        width=cfg.WORDCL_WIDTH,
+        # width=cfg.WORDCL_WIDTH,
         height=cfg.WORDCL_HEIGHT,
         autosize=True,
         margin=dict(t=20, r=20, b=20, l=20),

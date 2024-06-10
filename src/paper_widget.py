@@ -22,6 +22,12 @@ def generate_paper_table(paper):
                       "font-family": "Arial, sans-serif",
                       "padding": "10"}),  
             html.Tr([
+                html.Th("Organizations"), 
+                html.Td(paper['institutes'])
+            ], style={"background-color": "#e6e6e6", 
+                      "font-family": "Arial, sans-serif",
+                      "padding": "10"}),  
+            html.Tr([
                 html.Th("Abstract"), 
                 html.Td(paper['abstract'])  # Increase font size of abstract
             ], style={"background-color": "#f2f2f2", 
@@ -32,17 +38,24 @@ def generate_paper_table(paper):
                 html.Td(paper['relevant_tags'])  # Increase font size of abstract
             ], style={"background-color": "#f2f2f2", 
                       "font-family": "Arial, sans-serif",
-                      "padding": "10"}),  
+                      "padding": "10"}), 
+            html.Tr([
+                html.Th("Project Link"),
+                html.Td(html.A("link", href=paper['project_link'])) if isinstance(paper['project_link'], str) else html.Td("Not available")
+            ], style={"background-color": "#e6e6e6", 
+                      "font-family": "Arial, sans-serif",
+                      "padding": "10"}) ,
             html.Tr([
                 html.Th("Paper Link"), 
                 html.Td(html.A("link", href=paper['paper_link']))
             ], style={"background-color": "#e6e6e6", 
                       "font-family": "Arial, sans-serif",
                       "padding": "10"})  # 
+                    
         ],
         style={'overflow-y':'auto', 
                   'height':300, 
-                  'width': 800, 
+                  'width': '100%',
                   'background-color': '#f0f0f0', 
                   'padding': '0px',
                   }
@@ -56,7 +69,7 @@ def generate_paper_list(papers):
             html.Div(
                 className="paper-entry",
                 style={"border": "1px solid black" if i % 2 == 0 else "1px solid blue",
-                       "width": "800px",  # Set width of each paper entry
+                       "width": "100%",  # Set width of each paper entry
                        "padding": "10px"},  # Add padding around each paper entry
                 children=generate_paper_table(paper)
             )

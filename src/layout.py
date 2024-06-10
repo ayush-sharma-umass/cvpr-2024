@@ -5,7 +5,8 @@ import plotly.graph_objects as go
 
 from src.wordcloud_builder import wordcloud_to_plotly
 from src.paper_widget import generate_paper_list
-
+from src.sidebar_widgets import create_instruction_box, create_radio_buttons, create_explanation_box
+from src.markdown_consts import markdown_library
 
 def create_default_layout(cfg, fig_wc, tags):
     return html.Div([
@@ -31,7 +32,7 @@ def create_default_layout(cfg, fig_wc, tags):
         html.Div(
             style={'display': 'flex', 'flexDirection': 'row'},
             children=[
-                # Sidebar with centered radio buttons and colored panel
+                # Left sidebar with centered radio buttons and colored panel
                 html.Div(
                     className="sidebar",
                     style={
@@ -43,17 +44,12 @@ def create_default_layout(cfg, fig_wc, tags):
                         'backgroundColor': '#93C572'  # Replace with your desired side panel color
                     },
                     children=[
-                        html.H3('Wordcloud Options'),
-                        dcc.RadioItems(
-                            id='cloud-type',
-                            options=[
-                                {'label': 'Tags', 'value': 'tags'},
-                                {'label': 'Organizations', 'value': 'orgs'},
-                            ],
-                            value='tags',
-                            labelStyle={'display': 'block'},
-                            # Center radio buttons within sidebar
-                        ),
+                        create_radio_buttons(uid='cloud-type',
+                                             options=["Tags", "Organizations"], 
+                                             selected="Tags", 
+                                             header="Select Wordcloud Type"),
+                        html.Div(id='wordcloud-desc', children=create_explanation_box(markdown_text=markdown_library[cfg.TAGS_EXPLANATION])),
+                        
                     ]
                 ),
                 # Content area with the same styles
@@ -61,7 +57,7 @@ def create_default_layout(cfg, fig_wc, tags):
                     className="content",
                     style={'width': '75%', 'display': 'inline-block', 'verticalAlign': 'top'},
                     children=[
-                        dcc.Graph(id='wordcloud', figure=fig_wc),
+                        dcc.Graph(id='wordcloud', figure=fig_wc, style={'width': '80%'}),
                         html.Div(id='selected-words', children="Selected Tags: None", style={'margin-bottom': '10px'}),
                         dcc.Dropdown(
                             id='word-dropdown',
@@ -77,7 +73,7 @@ def create_default_layout(cfg, fig_wc, tags):
                             id="paper-container",
                             style={"height": "900px",
                                 "overflowY": "auto",
-                                'width': '100%',
+                                'width': '80%',
                                 'padding': 20,
                                 'backgroundColor': '#ffffff',
                                 'border': '1px solid #d3d3d3'},
@@ -86,9 +82,25 @@ def create_default_layout(cfg, fig_wc, tags):
                         dcc.Store(id='active-tags', data=[]),
                         dcc.Store(id='active-orgs', data=[])
                     ]
+                ),
+                # Right sidebar with blue colored boxes
+                html.Div(
+                    className="right-sidebar",
+                    style={
+                        'width': '20%',
+                        'display': 'inline-block',
+                        'verticalAlign': 'top',
+                        'padding': '20px',
+                        'backgroundColor': '#93C572'  # Match left sidebar color
+                    },
+                    children=[
+                        # Stack three blue boxes with padding
+                        create_instruction_box("Step 1", "Click on the wordcloud to select words or type in the search bar. \nYou can select multiple tags!"),
+                        create_instruction_box("Step 2", "Click on the bar plot to view papers below."),
+                        create_instruction_box("Step 3", "Scroll down below to see list of papers!"),
+                    ],
                 )
             ]
         )
-    ], style={'display': 'flex', 'flexDirection': 'column'})
-
+    ])
 

@@ -5,6 +5,8 @@ from dash import Dash, html, dcc, Output, Input, State
 import plotly.graph_objects as go
 
 from src.wordcloud_builder import create_a_wordcloud, wordcloud_to_plotly
+from src.sidebar_widgets import create_explanation_box
+from src.markdown_consts import markdown_library
 from src.paper_widget import generate_paper_list
 from src.barplot_widget import update_bar_plot
 from src.utils import create_tag_to_organizations_map, create_organization_to_tags_map, create_list_of_papers_from_tags_and_orgs
@@ -45,6 +47,7 @@ app.layout = create_default_layout(cfg, tag_fig_wc, tags)
     Output('word-dropdown', 'options'),
     Output('word-dropdown', 'placeholder'),
     Output('selected-bar', 'children', ),
+    Output('wordcloud-desc', 'children'),
     Output('active-tags', 'data'),
     Output('active-orgs', 'data'),
     Input('cloud-type', 'value'),
@@ -57,19 +60,23 @@ def switch_wordcloud(cloud_type):
     active_tags = []
     selected_words_placeholder = ''
     selected_bar_placeholder = ''
-    if cloud_type == 'tags':
-        wordcloud, tags, word_data = create_a_wordcloud(data, cfg.RELEVANT_TAGS)
+    wordcloud_desc = create_explanation_box(markdown_text=markdown_library[cfg.TAGS_EXPLANATION]),
+
+    if cloud_type == 'Tags':
+        _, tags, word_data = create_a_wordcloud(data, cfg.RELEVANT_TAGS)
         fig_wc = wordcloud_to_plotly(word_data)
         options = [{'label': tag, 'value': tag} for tag in tags]
         selected_words_placeholder = 'Click Wordcloud or Select tags...'
         selected_bar_placeholder = 'Selected Tags: None'
+        wordcloud_desc = create_explanation_box(markdown_text=markdown_library[cfg.TAGS_EXPLANATION]),
     else:
-        wordcloud, orgs, org_data = create_a_wordcloud(data, cfg.RELEVANT_ORGS)
+        _, orgs, org_data = create_a_wordcloud(data, cfg.RELEVANT_ORGS)
         fig_wc = wordcloud_to_plotly(org_data)
         options = [{'label': org, 'value': org} for org in orgs]
         selected_words_placeholder = 'Click Wordcloud or Select organizations...'
         selected_bar_placeholder = 'Selected Organizations: None'
-    return fig_wc, options, selected_words_placeholder, selected_bar_placeholder, active_tags, active_orgs
+        wordcloud_desc = create_explanation_box(markdown_text=markdown_library[cfg.ORGS_EXPLANATION]),
+    return fig_wc, options, selected_words_placeholder, selected_bar_placeholder, wordcloud_desc, active_tags, active_orgs
 
 
 @app.callback(
@@ -101,11 +108,11 @@ def upon_wordcloud_click(click_data, current_words, active_tags, active_orgs, cl
     display = 'Selected: None'
     fig_bar = {}
 
-    if cloud_type == 'tags':
+    if cloud_type == 'Tags':
         active_tags = current_words
         fig_bar = update_bar_plot(tag_based=True, search_words=active_tags, key_to_paper_map=tag_to_org_map)
         display = "Selected Tags: " + ", ".join(active_tags) if active_tags else "Selected Tags: None"
-    elif cloud_type == 'orgs':
+    elif cloud_type == 'Organizations':
         active_orgs = current_words
         fig_bar = update_bar_plot(tag_based=False, search_words=active_orgs, key_to_paper_map=org_to_tag_map)
         display = "Selected Orgs: " + ", ".join(active_orgs) if active_orgs else "Selected Orgs: None"
@@ -129,9 +136,9 @@ def upon_barplot_element_click(click_data, active_tags, active_orgs, cloud_type)
         clicked_bar_element = click_data['points'][0]['y']
     
     selected_bar_element_display = f"Selected: {clicked_bar_element}" if clicked_bar_element else "Selected: None"
-    if cloud_type == 'tags':
+    if cloud_type == 'Tags':
         active_orgs = [clicked_bar_element] if clicked_bar_element else []
-    elif cloud_type == 'orgs':
+    elif cloud_type == 'Organizations':
         active_tags = [clicked_bar_element] if clicked_bar_element else []
     
     if active_tags and active_orgs:
@@ -162,13 +169,13 @@ def upon_search_bar_update(selected_words, active_tags, active_orgs, cloud_type)
     selected_words_display = 'Selected: None'
     selected_bar_display = 'Selected: None'
     fig_bar = {}
-    if cloud_type == 'tags':
+    if cloud_type == 'Tags':
         active_tags = selected_words
         selected_words_display = "Selected Tags: " + ", ".join(active_tags) if active_tags else "Selected Tags: None"
         selected_bar_display = "Selected Organizations: None"
         active_orgs = []
         fig_bar = update_bar_plot(tag_based=True, search_words=active_tags, key_to_paper_map=tag_to_org_map)
-    elif cloud_type == 'orgs':
+    elif cloud_type == 'Organizations':
         active_orgs = selected_words
         selected_words_display = "Selected Orgs: " + ", ".join(active_orgs) if active_orgs else "Selected Orgs: None"
         selected_bar_display = "Selected Tags: None"

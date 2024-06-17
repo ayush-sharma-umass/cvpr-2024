@@ -8,6 +8,7 @@ from src.paper_widget import generate_paper_list
 from src.sidebar_widgets import create_instruction_box, create_radio_buttons, create_explanation_box
 from src.markdown_consts import markdown_library
 
+
 def create_default_layout(cfg, fig_wc, tags):
     return html.Div([
         # Title bar with centered title and different background color
@@ -19,14 +20,46 @@ def create_default_layout(cfg, fig_wc, tags):
                                             'border': '1px solid #d3d3d3',
                                             'padding': '10px',
                                             }),
+                html.Div(
+                    children=[
+                        html.A(
+                            children=[
+                                html.Img(src='././static/LI-In-Bug.png', style={
+                                    'width': '40px',
+                                    'height': '40px',
+                                    'verticalAlign': 'middle'
+                                }),
+                                html.Span('Ayush Sharma', style={'marginLeft': '2px', 'color': '#000000'})
+                            ],
+                            href='https://www.linkedin.com/in/ayushsharma-umass/',
+                            target='_blank',
+                            style={
+                                'textDecoration': 'none',
+                                'color': '#ffffff',
+                                'display': 'flex',
+                                'alignItems': 'center'
+                            }
+                        )
+                    ],
+                    style={
+                        'position': 'absolute',
+                        'bottom': '10px',
+                        'right': '10px',
+                        'backgroundColor': '#DADBDD',
+                        'padding': '10px',
+                        'border': '2px solid #ffffff',
+                        'borderRadius': '5px'
+                    }
+                )
             ],
             style={
                 'backgroundColor': '#527A35',  # Replace with your desired color
                 'padding': '20px',
                 'display': 'flex',
-                'justifyContent': 'center',
+                'flexDirection': 'column',
                 'alignItems': 'center',
                 'border': '2px solid #ffffff',
+                'position': 'relative'
             }
         ),
         html.Div(
@@ -103,4 +136,3 @@ def create_default_layout(cfg, fig_wc, tags):
             ]
         )
     ])
-

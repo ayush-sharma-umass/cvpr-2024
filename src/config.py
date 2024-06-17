@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 cfg = {
     'page_title': "CVPR 2024 DASHBOARD",
-    'DATA_DIR': "../data",
+    'DATA_DIR': "data",
     'DATA_CSV': "large-cvpr-24-with-openai-response-and-institutes.csv",
     'RELEVANT_TAGS': 'relevant_tags',
     'RELEVANT_ORGS': 'institutes',
